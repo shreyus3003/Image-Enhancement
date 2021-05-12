@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gan-server
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: gan-server
+  template:
+    metadata:
+      labels:
+        app: gan-server
+    spec:
+      containers:
+      - name: gan-container
+        image: gcr.io/et-projectv1-296810/ganapp@sha256:f6aa9f963e0f6ab57839bcc301f17dce7281fd53f4187c65da828b5629564f02
+        ports:
+        - containerPort: 5000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    run: gan-service
+  name: gan-service
+spec:
+  ports:
+  - port: 5000
+    targetPort: 5000
+  selector:
+    app: gan-server
+  type: LoadBalancer
