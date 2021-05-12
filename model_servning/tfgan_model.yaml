@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tfmodel
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: tfmodel
+  template:
+    metadata:
+      labels:
+        app: tfmodel
+    spec:
+      containers:
+      - name: tfmodel
+        image: gcr.io/et-projectv1-296810/gserv@sha256:b5c84539ba1ae2a5715436a62b48919d214f9b182f9fda8634fe86a39fe3e126
+        ports:
+        - containerPort: 8501
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    run: model-service
+  name: model-service
+spec:
+  ports:
+  - port: 8501
+    targetPort: 8501
+  selector:
+    app: tfmodel
+  type: LoadBalancer
